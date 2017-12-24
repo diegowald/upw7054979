@@ -1,0 +1,3 @@
+[submodule "3rdParty/qhttpserver"]
+	path = 3rdParty/qhttpserver
+	url = https://github.com/diegowald/qhttpserver.git
