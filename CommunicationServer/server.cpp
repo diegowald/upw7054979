@@ -18,6 +18,7 @@ Server::Server(QObject *parent) : QObject(parent)
 
 void Server::handleRequest(QHttpRequest *req, QHttpResponse *resp)
 {
+    qDebug() << req->path();
     bool found = false;
     foreach(QString regExp, _functors.keys())
     {

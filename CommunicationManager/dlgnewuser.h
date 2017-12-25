@@ -16,6 +16,9 @@ public:
     ~DlgNewUser();
 
     QString userName() const;
+private slots:
+    void on_buttonBox_accepted();
+
 private:
     Ui::DlgNewUser *ui;
 };

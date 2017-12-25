@@ -57,7 +57,7 @@
       <item>
        <widget class="QLineEdit" name="txtUser">
         <property name="text">
-         <string>Manager</string>
+         <string>manager</string>
         </property>
        </widget>
       </item>

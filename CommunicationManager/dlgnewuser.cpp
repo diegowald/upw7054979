@@ -17,3 +17,9 @@ QString DlgNewUser::userName() const
 {
     return ui->txtUser->text();
 }
+
+void DlgNewUser::on_buttonBox_accepted()
+{
+
+    close();
+}
