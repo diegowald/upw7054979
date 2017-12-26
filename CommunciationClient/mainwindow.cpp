@@ -13,7 +13,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     connect(&qnam, &QNetworkAccessManager::sslErrors, this, &MainWindow::sslErrors);
-    _workerThread = nullptr;
     _multicastReceiver = nullptr;
 }
 
@@ -24,7 +23,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_btnConnect_clicked()
 {
-    QString webAddress = ui->txtURL->text() + "/content/" + ui->txtUser->text();
+    QString webAddress = ui->txtURL->text() + "/keepAlive/" + ui->txtUser->text();
     url = QUrl::fromUserInput(webAddress);
     if (!url.isValid()) {
         QMessageBox::information(this, tr("Error"),
@@ -38,19 +37,6 @@ void MainWindow::on_btnConnect_clicked()
     connect(reply, &QNetworkReply::finished, this, &MainWindow::httpFinished);
     connect(reply, &QIODevice::readyRead, this, &MainWindow::httpReadyRead);
 
-    if (_workerThread != nullptr)
-    {
-        _workerThread->quit();
-        _workerThread->wait();
-    }
-
-    _workerThread = new QThread(this);
-    _multicastReceiver = new MulticastReceiver();
-    _multicastReceiver->moveToThread(_workerThread);
-    connect(_workerThread, &QThread::finished, _multicastReceiver, &MulticastReceiver::deleteLater);
-    _workerThread->start();
-    //multicastReceiver->doWork();
-    connect(_multicastReceiver, &MulticastReceiver::multicastReceived, this, &MainWindow::on_multicastReceived);
 }
 
 void MainWindow::sslErrors(QNetworkReply *reply, const QList<QSslError> &errors)
@@ -127,14 +113,25 @@ void MainWindow::httpFinished()
 
 void MainWindow::httpReadyRead()
 {
-    ui->txtResponse->setText(reply->readAll());
-    // this slot gets called every time the QNetworkReply has new data.
-    // We read all of its new data and write it into the file.
-    // That way we use less RAM than when reading it at the finished()
-    // signal of the QNetworkReply
-    /*if (file)
-        file->write(reply->readAll());*/
-
+    QString response = reply->readAll();
+    if (response != "OK")
+    {
+        ui->txtResponse->setText(response);
+        if (_multicastReceiver != nullptr)
+        {
+            _multicastReceiver->disconnectNow();
+            _multicastReceiver->deleteLater();
+            _multicastReceiver = nullptr;
+        }
+    }
+    else
+    {
+        if (_multicastReceiver == nullptr)
+        {
+            _multicastReceiver = new MulticastReceiver();
+            connect(_multicastReceiver, &MulticastReceiver::multicastReceived, this, &MainWindow::on_multicastReceived);
+        }
+    }
     QTimer::singleShot(1000, this, SLOT(on_btnConnect_clicked()));
 }
 

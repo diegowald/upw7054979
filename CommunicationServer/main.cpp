@@ -13,12 +13,11 @@ int main(int argc, char *argv[])
     QCoreApplication a(argc, argv);
     Server server;
 
-    QThread workerThread;
+    //QThread workerThread;
     MulticastServer *multicastServer = new MulticastServer();
-    multicastServer->moveToThread(&workerThread);
-    QObject::connect(&workerThread, &QThread::finished, multicastServer, &MulticastServer::deleteLater);
-    workerThread.start();
-    multicastServer->doWork();
+    //multicastServer->moveToThread(&workerThread);
+    //QObject::connect(&workerThread, &QThread::finished, multicastServer, &MulticastServer::deleteLater);
+    //workerThread.start();
 
     server.subscribe("^/list/([a-z]+)$", [](QHttpRequest *req, QHttpResponse *resp, const QStringList &params) -> bool
     {
@@ -74,7 +73,7 @@ int main(int argc, char *argv[])
         return res;
     });
 
-    server.subscribe("^/content/([a-z]+)$", [](QHttpRequest *req, QHttpResponse *resp, const QStringList &params) -> bool
+    server.subscribe("^/keepAlive/([a-z]+)$", [](QHttpRequest *req, QHttpResponse *resp, const QStringList &params) -> bool
     {
         resp->setHeader("Content-Type", "text/html");
         resp->writeHead(200);
@@ -83,7 +82,7 @@ int main(int argc, char *argv[])
         DB db;
         if (!db.isBlocked(name))
         {
-            QString body = QObject::tr("<html><head><title>Greeting App</title></head><body><h1>Hello %1!</h1></body></html>");
+            QString body = QObject::tr("OK");
             resp->end(body.arg(name).toUtf8());
             return true;
         }
@@ -91,9 +90,10 @@ int main(int argc, char *argv[])
             return false;
     });
 
+    multicastServer->doWork();
     int res = a.exec();
-    workerThread.quit();
-    workerThread.wait();
+    //workerThread.quit();
+    //workerThread.wait();
 
     return res;
 }

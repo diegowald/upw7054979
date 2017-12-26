@@ -36,7 +36,6 @@ private:
     QNetworkReply *reply;
     bool httpRequestAborted;
 
-    QThread *_workerThread;
     MulticastReceiver *_multicastReceiver;
 };
 

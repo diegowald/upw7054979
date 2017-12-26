@@ -15,9 +15,15 @@ MulticastReceiver::MulticastReceiver(QObject *parent) : QObject(parent),
 void MulticastReceiver::processPendingDatagrams()
 {
     QByteArray datagram;
-    while (udpSocket.hasPendingDatagrams()) {
+    while (udpSocket.hasPendingDatagrams())
+    {
         datagram.resize(int(udpSocket.pendingDatagramSize()));
         udpSocket.readDatagram(datagram.data(), datagram.size());
         emit multicastReceived(QString::fromUtf8(datagram));
     }
+}
+
+void MulticastReceiver::disconnectNow()
+{
+    udpSocket.disconnectFromHost();
 }

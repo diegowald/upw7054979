@@ -12,6 +12,8 @@ class MulticastReceiver : public QObject
 public:
     explicit MulticastReceiver(QObject *parent = nullptr);
 
+    void disconnectNow();
+
 signals:
     void multicastReceived(const QString &payload);
 
