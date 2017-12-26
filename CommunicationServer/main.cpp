@@ -4,12 +4,21 @@
 #include <qhttprequest.h>
 #include <qhttpresponse.h>
 #include "db.h"
+#include "multicastserver.h"
+#include <QThread>
+
 
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
     Server server;
 
+    QThread workerThread;
+    MulticastServer *multicastServer = new MulticastServer();
+    multicastServer->moveToThread(&workerThread);
+    QObject::connect(&workerThread, &QThread::finished, multicastServer, &MulticastServer::deleteLater);
+    workerThread.start();
+    multicastServer->doWork();
 
     server.subscribe("^/list/([a-z]+)$", [](QHttpRequest *req, QHttpResponse *resp, const QStringList &params) -> bool
     {
@@ -82,6 +91,10 @@ int main(int argc, char *argv[])
             return false;
     });
 
-    return a.exec();
+    int res = a.exec();
+    workerThread.quit();
+    workerThread.wait();
+
+    return res;
 }
 

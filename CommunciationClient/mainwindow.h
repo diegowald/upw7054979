@@ -4,6 +4,9 @@
 #include <QMainWindow>
 #include <QNetworkAccessManager>
 #include <QUrl>
+#include "multicastreceiver.h"
+#include <QThread>
+
 
 namespace Ui {
 class MainWindow;
@@ -22,6 +25,8 @@ private slots:
     void httpFinished();
     void httpReadyRead();
     void sslErrors(QNetworkReply *, const QList<QSslError> &errors);
+    void on_multicastReceived(const QString &payload);
+
 
 private:
     Ui::MainWindow *ui;
@@ -30,6 +35,9 @@ private:
     QNetworkAccessManager qnam;
     QNetworkReply *reply;
     bool httpRequestAborted;
+
+    QThread *_workerThread;
+    MulticastReceiver *_multicastReceiver;
 };
 
 #endif // MAINWINDOW_H

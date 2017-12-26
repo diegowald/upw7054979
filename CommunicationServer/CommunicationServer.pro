@@ -17,7 +17,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += main.cpp \
     server.cpp \
-    db.cpp
+    db.cpp \
+    multicastserver.cpp
 
 INCLUDEPATH += ../3rdParty/qhttpserver/src/
 LIBS += -L../3rdParty/build/lib/
@@ -31,4 +32,5 @@ win32 {
 
 HEADERS += \
     server.h \
-    db.h
+    db.h \
+    multicastserver.h

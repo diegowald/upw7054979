@@ -5,6 +5,7 @@
 #include <QNetworkReply>
 #include <QTimer>
 
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -12,6 +13,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     connect(&qnam, &QNetworkAccessManager::sslErrors, this, &MainWindow::sslErrors);
+    _workerThread = nullptr;
+    _multicastReceiver = nullptr;
 }
 
 MainWindow::~MainWindow()
@@ -34,6 +37,20 @@ void MainWindow::on_btnConnect_clicked()
     reply = qnam.get(QNetworkRequest(url));
     connect(reply, &QNetworkReply::finished, this, &MainWindow::httpFinished);
     connect(reply, &QIODevice::readyRead, this, &MainWindow::httpReadyRead);
+
+    if (_workerThread != nullptr)
+    {
+        _workerThread->quit();
+        _workerThread->wait();
+    }
+
+    _workerThread = new QThread(this);
+    _multicastReceiver = new MulticastReceiver();
+    _multicastReceiver->moveToThread(_workerThread);
+    connect(_workerThread, &QThread::finished, _multicastReceiver, &MulticastReceiver::deleteLater);
+    _workerThread->start();
+    //multicastReceiver->doWork();
+    connect(_multicastReceiver, &MulticastReceiver::multicastReceived, this, &MainWindow::on_multicastReceived);
 }
 
 void MainWindow::sslErrors(QNetworkReply *reply, const QList<QSslError> &errors)
@@ -119,4 +136,10 @@ void MainWindow::httpReadyRead()
         file->write(reply->readAll());*/
 
     QTimer::singleShot(1000, this, SLOT(on_btnConnect_clicked()));
+}
+
+
+void MainWindow::on_multicastReceived(const QString &payload)
+{
+    ui->txtResponse->setText(payload);
 }

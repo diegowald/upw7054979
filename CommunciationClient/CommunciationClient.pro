@@ -25,10 +25,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
+    multicastreceiver.cpp
 
 HEADERS += \
-        mainwindow.h
+        mainwindow.h \
+    multicastreceiver.h
 
 FORMS += \
         mainwindow.ui
