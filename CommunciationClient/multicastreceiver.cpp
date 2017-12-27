@@ -1,8 +1,9 @@
 #include "multicastreceiver.h"
 
-MulticastReceiver::MulticastReceiver(QObject *parent) : QObject(parent),
+MulticastReceiver::MulticastReceiver(int id, QObject *parent) : QObject(parent),
     groupAddress(QStringLiteral("239.255.43.21"))
 {
+    _id = id;
 
     udpSocket.bind(QHostAddress::AnyIPv4, 45454, QUdpSocket::ShareAddress);
     udpSocket.joinMulticastGroup(groupAddress);
@@ -19,7 +20,7 @@ void MulticastReceiver::processPendingDatagrams()
     {
         datagram.resize(int(udpSocket.pendingDatagramSize()));
         udpSocket.readDatagram(datagram.data(), datagram.size());
-        emit multicastReceived(QString::fromUtf8(datagram));
+        emit multicastReceived(_id, QString::fromUtf8(datagram));
     }
 }
 

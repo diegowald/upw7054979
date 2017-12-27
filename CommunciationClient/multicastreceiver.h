@@ -10,12 +10,12 @@ class MulticastReceiver : public QObject
 {
     Q_OBJECT
 public:
-    explicit MulticastReceiver(QObject *parent = nullptr);
+    explicit MulticastReceiver(int id = -1, QObject *parent = nullptr);
 
     void disconnectNow();
 
 signals:
-    void multicastReceived(const QString &payload);
+    void multicastReceived(int id, const QString &payload);
 
 private slots:
     void processPendingDatagrams();
@@ -24,6 +24,7 @@ private slots:
 private:
     QUdpSocket udpSocket;
     QHostAddress groupAddress;
+    int _id;
 };
 
 #endif // MULTICASTRECEIVER_H

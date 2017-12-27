@@ -25,7 +25,7 @@ private slots:
     void httpFinished();
     void httpReadyRead();
     void sslErrors(QNetworkReply *, const QList<QSslError> &errors);
-    void on_multicastReceived(const QString &payload);
+    void on_multicastReceived(int id, const QString &payload);
 
 
 private:

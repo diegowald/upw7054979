@@ -136,7 +136,7 @@ void MainWindow::httpReadyRead()
 }
 
 
-void MainWindow::on_multicastReceived(const QString &payload)
+void MainWindow::on_multicastReceived(int id, const QString &payload)
 {
     ui->txtResponse->setText(payload);
 }
