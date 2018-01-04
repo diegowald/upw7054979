@@ -1,30 +1,28 @@
 #include "multicastreceiver.h"
 
-MulticastReceiver::MulticastReceiver(int id, QObject *parent) : QObject(parent),
-    groupAddress(QStringLiteral("239.255.43.21"))
+MulticastReceiver::MulticastReceiver(const QString &groupAddress, const int port, int id, QObject *parent) : QObject(parent),
+    _groupAddress(groupAddress)
 {
     _id = id;
 
-    udpSocket.bind(QHostAddress::AnyIPv4, 45454, QUdpSocket::ShareAddress);
-    udpSocket.joinMulticastGroup(groupAddress);
+    _udpSocket.bind(QHostAddress::AnyIPv4, 45454, QUdpSocket::ShareAddress);
+    _udpSocket.joinMulticastGroup(_groupAddress);
 
-    connect(&udpSocket, &QUdpSocket::readyRead, this, &MulticastReceiver::processPendingDatagrams);
-
-//    connect(quitButton, SIGNAL(clicked()), this, SLOT(close()));
+    connect(&_udpSocket, &QUdpSocket::readyRead, this, &MulticastReceiver::processPendingDatagrams);
 }
 
 void MulticastReceiver::processPendingDatagrams()
 {
     QByteArray datagram;
-    while (udpSocket.hasPendingDatagrams())
+    while (_udpSocket.hasPendingDatagrams())
     {
-        datagram.resize(int(udpSocket.pendingDatagramSize()));
-        udpSocket.readDatagram(datagram.data(), datagram.size());
+        datagram.resize(int(_udpSocket.pendingDatagramSize()));
+        _udpSocket.readDatagram(datagram.data(), datagram.size());
         emit multicastReceived(_id, QString::fromUtf8(datagram));
     }
 }
 
 void MulticastReceiver::disconnectNow()
 {
-    udpSocket.disconnectFromHost();
+    _udpSocket.disconnectFromHost();
 }

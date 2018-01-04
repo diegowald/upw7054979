@@ -128,7 +128,7 @@ void MainWindow::httpReadyRead()
     {
         if (_multicastReceiver == nullptr)
         {
-            _multicastReceiver = new MulticastReceiver();
+            _multicastReceiver = new MulticastReceiver(ui->txtMulticast->text(), ui->txtPOrt->text().toInt());
             connect(_multicastReceiver, &MulticastReceiver::multicastReceived, this, &MainWindow::on_multicastReceived);
         }
     }
@@ -138,5 +138,6 @@ void MainWindow::httpReadyRead()
 
 void MainWindow::on_multicastReceived(int id, const QString &payload)
 {
+    Q_UNUSED(id)
     ui->txtResponse->setText(payload);
 }

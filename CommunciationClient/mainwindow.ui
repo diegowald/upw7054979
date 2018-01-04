@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>599</width>
-    <height>400</height>
+    <height>468</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -42,6 +42,34 @@
        <widget class="QLineEdit" name="txtUser">
         <property name="text">
          <string>test</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>Multicast Group</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="txtMulticast">
+        <property name="text">
+         <string>239.255.43.21</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>Port</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QLineEdit" name="txtPOrt">
+        <property name="text">
+         <string>45454</string>
         </property>
        </widget>
       </item>
@@ -105,6 +133,14 @@
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <tabstops>
+  <tabstop>txtURL</tabstop>
+  <tabstop>txtUser</tabstop>
+  <tabstop>txtMulticast</tabstop>
+  <tabstop>txtPOrt</tabstop>
+  <tabstop>btnConnect</tabstop>
+  <tabstop>txtResponse</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

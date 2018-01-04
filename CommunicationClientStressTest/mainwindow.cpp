@@ -19,7 +19,7 @@ void MainWindow::on_pushButton_clicked()
     clearClients();
     for (int i = 0; i < numClients; ++i)
     {
-        MulticastReceiver *rec = new MulticastReceiver(i, this);
+        MulticastReceiver *rec = new MulticastReceiver("239.255.43.21", 45454, i, this);
         _receivers.append(rec);
         connect(rec, &MulticastReceiver::multicastReceived, this, &MainWindow::on_multicastReceived);
     }

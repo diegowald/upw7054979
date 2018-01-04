@@ -1,9 +1,10 @@
 #include "multicastserver.h"
 
-MulticastServer::MulticastServer(QObject *parent) : QObject(parent),
-    groupAddress(QStringLiteral("239.255.43.21"))
+
+MulticastServer::MulticastServer(const QString &groupAddress, int TTL, int port, QObject *parent) : QObject(parent),
+    _groupAddress(groupAddress), _port(port)
 {
-    udpSocket.setSocketOption(QAbstractSocket::MulticastTtlOption, 1);
+    _udpSocket.setSocketOption(QAbstractSocket::MulticastTtlOption, TTL);
 }
 
 void MulticastServer::doWork()
@@ -13,7 +14,7 @@ void MulticastServer::doWork()
     {
         QString txt = "Message %1";
         QByteArray datagram = txt.arg(repetitions).toUtf8();
-        udpSocket.writeDatagram(datagram, groupAddress, 45454);
+        _udpSocket.writeDatagram(datagram, _groupAddress, 45454);
         ++repetitions;
         QCoreApplication::processEvents();
         QThread::sleep(1);
